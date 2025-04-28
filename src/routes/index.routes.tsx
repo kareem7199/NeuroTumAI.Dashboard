@@ -1,6 +1,7 @@
 import { useRoutes } from 'react-router-dom';
 import Home from '../views/Home';
 import DashboardLayout from '@/components/layout/DashboardLayout';
+import Login from '@/views/Login';
 
 export default function Routes() {
   const element = useRoutes([
@@ -13,6 +14,14 @@ export default function Routes() {
             <DashboardLayout>
               <Home />
             </DashboardLayout>
+            </>
+          ),
+        },
+        {
+          path: '/login',
+          element: (
+            <>
+              <Login />
             </>
           ),
         }
