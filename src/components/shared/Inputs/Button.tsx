@@ -34,7 +34,7 @@ const Button: React.FC<ButtonProps> = ({
     <NextUiButton
       type={type}
       color="primary"
-      className={twMerge("min-w-32 p-2 text-lg", className)}
+      className={twMerge("min-w-32 p-2", className)}
       isLoading={isLoading}
       onPress={handleClick}
       isDisabled={isDisabled}

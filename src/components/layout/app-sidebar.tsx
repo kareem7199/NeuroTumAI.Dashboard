@@ -30,7 +30,7 @@ const data = {
       items: [
         {
           title: "Pending Doctors",
-          url: "#",
+          url: "/doctors/pending",
         }
       ],
     },

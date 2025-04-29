@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import logo from "@/assets/icon.png";
+import logo from "@/assets/icons/icon.png";
 
 export function AppName() {
   
