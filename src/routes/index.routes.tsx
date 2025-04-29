@@ -6,38 +6,29 @@ import PendingDoctorsView from "@/views/PendingDoctorsView";
 
 export default function Routes() {
   const element = useRoutes([
+    // Public routes
     {
+      path: "/login",
+      element: <Login />,
+    },
+
+    // Dashboard layout applied to all children here
+    {
+      element: <DashboardLayout />,
       children: [
         {
           path: "/",
-          element: (
-            <>
-              <DashboardLayout>
-                <Home />
-              </DashboardLayout>
-            </>
-          ),
-        },
-        {
-          path: "/login",
-          element: (
-            <>
-              <Login />
-            </>
-          ),
+          element: <Home />,
         },
         {
           path: "/doctors/pending",
-          element: (
-            <>
-              <DashboardLayout>
-                <PendingDoctorsView />
-              </DashboardLayout>
-            </>
-          ),
+          element: <PendingDoctorsView />,
         },
+        // add more dashboard-protected routes here
       ],
     },
+
+    // 404 fallback
     {
       path: "*",
       element: (
@@ -47,5 +38,6 @@ export default function Routes() {
       ),
     },
   ]);
+
   return element;
 }

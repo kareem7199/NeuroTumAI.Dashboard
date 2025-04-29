@@ -1,19 +1,46 @@
-import { cn } from "@/lib/utils"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Logo from "@/assets/icons/icon.png"
-import Button from "@/components/shared/Inputs/Button"
+import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Logo from "@/assets/icons/icon.png";
+import Button from "@/components/shared/Inputs/Button";
+import React from "react";
+import authService from "@/services/auth.service";
+import { useSetRecoilState } from "recoil";
+import { tokenState } from "@/recoil/tokenAtom";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const setToken = useSetRecoilState(tokenState);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await authService.login(email, password);
+      const token = response.data.data;
+      setToken(token);
+      localStorage.setItem("token", token);
+      navigate("/");
+    } catch (error: any) {
+      toast.error(error.response.data.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8 min-h-[30vh]">
+          <form className="p-6 md:p-8 min-h-[30vh]" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -27,6 +54,7 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -40,9 +68,18 @@ export function LoginForm({
                     Forgot your password?
                   </a> */}
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
-              <Button type="submit" className="w-full font-bold">
+              <Button
+                type="submit"
+                className="w-full font-bold"
+                isLoading={loading}
+              >
                 Login
               </Button>
             </div>
@@ -57,5 +94,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

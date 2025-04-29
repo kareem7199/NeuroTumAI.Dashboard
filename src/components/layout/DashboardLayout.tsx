@@ -1,16 +1,20 @@
-import type { ReactNode } from "react";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-interface DashboardLayoutProps {
-  children: ReactNode;
-}
+export default function DashboardLayout() {
+  const navigate = useNavigate();
 
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) navigate("/login");
+  }, [navigate]);
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background w-full">
@@ -23,7 +27,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
             </header>
           </SidebarInset>
-          {children}
+          <Outlet />
         </main>
       </div>
     </SidebarProvider>
