@@ -4,13 +4,18 @@ import "./index.css";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { HeroUIProvider } from "@heroui/react";
+import { RecoilRoot } from "recoil";
+import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <HeroUIProvider>
-        <App />
-      </HeroUIProvider>
-    </BrowserRouter>
+    <RecoilRoot>
+      <BrowserRouter>
+        <HeroUIProvider>
+          <Toaster position="bottom-center" />
+          <App />
+        </HeroUIProvider>
+      </BrowserRouter>
+    </RecoilRoot>
   </StrictMode>
 );

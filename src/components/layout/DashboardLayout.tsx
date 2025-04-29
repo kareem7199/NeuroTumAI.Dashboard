@@ -6,14 +6,36 @@ import {
 import { AppSidebar } from "./app-sidebar";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { userState } from "@/recoil/userAtom";
+import { tokenState } from "@/recoil/tokenAtom";
+import authService from "@/services/auth.service";
 
 export default function DashboardLayout() {
+  const [, setUser] = useRecoilState(userState);
+  const [token, setToken] = useRecoilState(tokenState);
+
   const navigate = useNavigate();
 
+  const fetchUser = async () => {
+    try {
+      const response = await authService.getUserData();
+      setUser(response.data.data);
+    } catch (error) {
+      setToken(null);
+      setUser(null);
+      navigate("/login");
+    }
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) navigate("/login");
-  }, [navigate]);
+    if (!token) {
+      setUser(null);
+      navigate("/login");
+    }
+
+    fetchUser();
+  }, [token]);
 
   return (
     <SidebarProvider>
