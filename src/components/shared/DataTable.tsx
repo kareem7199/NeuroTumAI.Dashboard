@@ -9,6 +9,8 @@ import {
   type SortDescriptor,
 } from "@heroui/react";
 import { twMerge } from "tailwind-merge";
+import Input from "./Inputs/Input";
+import { Search } from "lucide-react";
 
 export type Column<T> = {
   key: string;
@@ -92,12 +94,14 @@ export function DataTable<T>({
       <CardBody className="p-0 overflow-hidden">
         {enableSearch && (
           <div className="p-4">
-            <input
+            <Input
               type="text"
               value={internalSearch}
+              name="search"
               placeholder={searchPlaceholder}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full border px-3 py-2 rounded-md shadow-sm"
+              handleChange={(e) => handleSearchChange(e.target.value)}
+              variant="bordered"
+              startContent={<Search size={15}/>}
             />
           </div>
         )}
