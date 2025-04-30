@@ -13,6 +13,16 @@ const getPendingDoctors = async (
   return response;
 };
 
+const acceptDoctor = async (doctorId: number) => {
+  await axiosInstance.put(`/Admin/pendingDoctors/accept/${doctorId}`);
+};
+
+const rejectDoctor = async (doctorId: number) => {
+  await axiosInstance.delete(`/Admin/pendingDoctors/reject/${doctorId}`);
+};
+
 export default {
   getPendingDoctors,
+  acceptDoctor,
+  rejectDoctor
 };

@@ -1,9 +1,11 @@
 import { Column, DataTable } from "@/components/shared/DataTable";
+import DoctorLicenseModal from "@/components/specific/PendingDoctors/DoctorLicenseModal";
 import doctorService from "@/services/doctor.service";
 import PendingDoctor from "@/types/doctor/PendingDoctor";
-import { Button, Chip, User } from "@heroui/react";
+import { Button, Chip, useDisclosure, User } from "@heroui/react";
 import { Check, Eye, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const PendingDoctorsView = () => {
   const [pendingDoctors, setPendingDoctors] = useState<PendingDoctor[]>([]);
@@ -12,6 +14,12 @@ const PendingDoctorsView = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [refetch, setRefetch] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<PendingDoctor>();
+
+  const [accepting, setAccepting] = useState<number | null>(null);
+  const [rejecting, setRejecting] = useState<number | null>(null);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const rowsPerPage = 15;
 
@@ -24,6 +32,49 @@ const PendingDoctorsView = () => {
     setSearchTerm(value);
     setPage(1);
     setRefetch((prev) => !prev);
+  };
+
+  const handleSelectDoctor = (doctor: PendingDoctor) => {
+    setSelectedDoctor(doctor);
+    onOpen();
+  };
+
+  const fetchDoctors = async () => {
+    setLoading(true);
+    const response = await doctorService.getPendingDoctors(
+      page,
+      rowsPerPage,
+      searchTerm
+    );
+    setPendingDoctors(response.data.data);
+    setTotalPages(response.data.totalPages);
+    setLoading(false);
+  };
+
+  const handleAcceptDoctor = async (doctorId: number) => {
+    try {
+      setAccepting(doctorId);
+      await doctorService.acceptDoctor(doctorId);
+      toast.success("Doctor accepted successfully");
+      setRefetch((prev) => !prev);
+    } catch (error: any) {
+      toast.error(error.response.data.message || "Something went wrong");
+    } finally {
+      setAccepting(null);
+    }
+  };
+
+  const handleRejectDoctor = async (doctorId: number) => {
+    try {
+      setRejecting(doctorId);
+      await doctorService.rejectDoctor(doctorId);
+      toast.success("Doctor rejected successfully");
+      setRefetch((prev) => !prev);
+    } catch (error: any) {
+      toast.error(error.response.data.message || "Something went wrong");
+    } finally {
+      setRejecting(null);
+    }
   };
 
   const columns: Column<PendingDoctor>[] = [
@@ -67,7 +118,7 @@ const PendingDoctorsView = () => {
         <Button
           variant="bordered"
           size="sm"
-          onClick={() => {}}
+          onClick={() => handleSelectDoctor(doctor)}
           startContent={<Eye size={16} />}
         >
           View
@@ -83,7 +134,11 @@ const PendingDoctorsView = () => {
             color="success"
             variant="flat"
             size="sm"
-            onClick={() => {}}
+            onClick={() => {
+              handleAcceptDoctor(doctor.id);
+            }}
+            isLoading={accepting === doctor.id}
+            isDisabled={accepting !== null}
             startContent={<Check size={16} />}
           >
             Accept
@@ -92,7 +147,11 @@ const PendingDoctorsView = () => {
             color="danger"
             variant="flat"
             size="sm"
-            onClick={() => {}}
+            onClick={() => {
+              handleRejectDoctor(doctor.id);
+            }}
+            isLoading={rejecting === doctor.id}
+            isDisabled={rejecting !== null}
             startContent={<X size={16} />}
           >
             Reject
@@ -101,18 +160,6 @@ const PendingDoctorsView = () => {
       ),
     },
   ];
-
-  const fetchDoctors = async () => {
-    setLoading(true);
-    const response = await doctorService.getPendingDoctors(
-      page,
-      rowsPerPage,
-      searchTerm
-    );
-    setPendingDoctors(response.data.data);
-    setTotalPages(response.data.totalPages);
-    setLoading(false);
-  };
 
   useEffect(() => {
     fetchDoctors();
@@ -141,6 +188,14 @@ const PendingDoctorsView = () => {
         classNames={{
           wrapper: "shadow-md",
         }}
+      />
+
+      <DoctorLicenseModal
+        selectedDoctor={selectedDoctor!}
+        handleAccept={handleAcceptDoctor}
+        handleReject={handleRejectDoctor}
+        isOpen={isOpen}
+        onClose={onClose}
       />
     </div>
   );

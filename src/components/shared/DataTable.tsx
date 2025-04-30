@@ -141,7 +141,7 @@ export function DataTable<T>({
                   data.map((item) => (
                     <tr
                       key={String(item[rowKey])}
-                      className={`border-b border-default-100 ${
+                      className={`border-b border-default-100 transition-opacity duration-500 opacity-0 animate-fade-in ${
                         classNames.tr || ""
                       }`}
                     >
