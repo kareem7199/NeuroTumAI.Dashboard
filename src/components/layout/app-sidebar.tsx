@@ -1,6 +1,7 @@
 import * as React from "react"
 import {
   BriefcaseMedical,
+  Home,
   Hospital
 } from "lucide-react"
 
@@ -17,6 +18,12 @@ import {
 
 const data = {
   navMain: [
+    {
+      title: "Home",
+      url: "/",
+      icon: Home,
+      isActive: true,
+    },
     {
       title: "Doctors",
       url: "#",
