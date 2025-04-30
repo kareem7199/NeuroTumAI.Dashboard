@@ -24,6 +24,7 @@ export function LoginForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await authService.login(email, password);
       const token = response.data.data;
       setToken(token);

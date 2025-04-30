@@ -1,22 +1,20 @@
 import { AxiosResponse } from "axios";
 
 interface ApiResponse<T> {
+  success: boolean;
+  message: string;
   data: T;
 }
 
-interface ApiResponseWithPagination<T, K extends string> {
-  success: boolean;
-  message: string;
-  data: {
-    currentPage: number;
-    totalPages: number;
-    totalCount: number;
-  } & {
-    [key in K]: T;
-  };
+interface ApiResponseWithPagination<T> {
+  pageIndex: number;
+  pageSize: number;
+  count: number;
+  totalPages: number;
+  data: T
 }
 
 export type ApiAxiosResponse<T> = Promise<AxiosResponse<ApiResponse<T>>>;
-export type ApiAxiosResponseWithPagination<T, K extends string> = Promise<
-  AxiosResponse<ApiResponseWithPagination<T, K>>
+export type ApiAxiosResponseWithPagination<T> = Promise<
+  AxiosResponse<ApiResponseWithPagination<T>>
 >;
