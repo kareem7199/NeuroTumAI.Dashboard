@@ -22,13 +22,11 @@ const data = {
       title: "Home",
       url: "/",
       icon: Home,
-      isActive: true,
     },
     {
       title: "Doctors",
       url: "#",
       icon: BriefcaseMedical,
-      isActive: true,
       items: [
         {
           title: "Pending Doctors",
@@ -40,7 +38,6 @@ const data = {
       title: "Clinics",
       url: "#",
       icon: Hospital,
-      isActive: true,
       items: [
         {
           title: "Pending Clinics",
