@@ -3,6 +3,7 @@ import Home from "../views/Home";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Login from "@/views/Login";
 import PendingDoctorsView from "@/views/PendingDoctorsView";
+import PendingClinicsView from "@/views/PendingClinicsView";
 
 export default function Routes() {
   const element = useRoutes([
@@ -24,7 +25,10 @@ export default function Routes() {
           path: "/doctors/pending",
           element: <PendingDoctorsView />,
         },
-        // add more dashboard-protected routes here
+        {
+          path: "/clinics/pending",
+          element: <PendingClinicsView />,
+        },
       ],
     },
 

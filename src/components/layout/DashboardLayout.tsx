@@ -24,6 +24,7 @@ export default function DashboardLayout() {
     } catch (error) {
       setToken(null);
       setUser(null);
+      localStorage.removeItem("token");
       navigate("/login");
     }
   };

@@ -44,7 +44,7 @@ const data = {
       items: [
         {
           title: "Pending Clinics",
-          url: "#",
+          url: "/clinics/pending",
         }
       ],
     },
