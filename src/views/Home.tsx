@@ -2,18 +2,12 @@ import { Column, DataTable } from "@/components/shared/DataTable";
 import HomeCard from "@/components/specific/Home/HomeCard";
 import { userState } from "@/recoil/userAtom";
 import clinicService from "@/services/clinic.service";
+import dashboardService from "@/services/dashboard.service";
 import doctorService from "@/services/doctor.service";
 import { PendingClinic } from "@/types/clinic/PendingClinic";
 import PendingDoctor from "@/types/doctor/PendingDoctor";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Chip,
-  Divider,
-  User,
-} from "@heroui/react";
+import { Statstics } from "@/types/statstics/Statstics";
+import { Button, Card, CardBody, Chip, Spinner, User } from "@heroui/react";
 import { BriefcaseMedical, Clock10, Hospital } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -22,6 +16,9 @@ import { useRecoilValue } from "recoil";
 const Home = () => {
   const [pendingClinics, setPendingClinics] = useState<PendingClinic[]>([]);
   const [pendingDoctors, setPendingDoctors] = useState<PendingDoctor[]>([]);
+  const [statstics, setStatistics] = useState<Statstics>();
+  const [isLoading, setIsLoading] = useState(true);
+
   const columns: Column<PendingClinic>[] = [
     {
       key: "doctor",
@@ -83,28 +80,38 @@ const Home = () => {
   const user = useRecoilValue(userState);
 
   useEffect(() => {
-    const fetchPendingClinics = async () => {
-      try {
-        const response = await clinicService.getPendingClinics(1, 5);
-        setPendingClinics(response.data.data);
-      } catch (error) {
-        console.error(error);
-      }
+    const init = async () => {
+      const pendingClinicsResponse = await clinicService.getPendingClinics(
+        1,
+        5
+      );
+      setPendingClinics(pendingClinicsResponse.data.data);
+
+      const pendingDoctorsResponse = await doctorService.getPendingDoctors(
+        1,
+        5
+      );
+      setPendingDoctors(pendingDoctorsResponse.data.data);
+
+      const statsResponse = await dashboardService.getStatistics();
+      setStatistics(statsResponse.data.data);
+
+      setIsLoading(false);
     };
-    const fetchPendingDoctors = async () => {
-      try {
-        const response = await doctorService.getPendingDoctors(1, 5);
-        setPendingDoctors(response.data.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchPendingClinics();
-    fetchPendingDoctors();
+
+    init();
   }, []);
 
+  if (!user || isLoading) {
+    return (
+      <div className="flex justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-4 pb-5">
+    <div className="flex flex-col gap-4 pb-5 transition-opacity duration-500 opacity-0 animate-fade-in">
       {/* user info */}
       <div>
         <h4 className="font-semibold">Welcome Back,</h4>
@@ -114,43 +121,46 @@ const Home = () => {
       {/* dashboard content */}
       <div className="flex gap-4">
         <div className="flex-1 flex flex-col gap-4">
-          <div className="grid grid-cols-5 gap-4">
+          {/* stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
             <HomeCard
               title="Doctors"
-              count={5}
+              count={statstics?.doctors || 0}
               Icon={BriefcaseMedical}
               iconBgColor="bg-blue-100"
               iconColor="text-blue-600"
             />
             <HomeCard
               title="Pending Doctors"
-              count={5}
+              count={statstics?.pendingDoctors || 0}
               Icon={BriefcaseMedical}
               iconBgColor="bg-orange-100"
               iconColor="text-orange-600"
             />
             <HomeCard
               title="Clinics"
-              count={5}
+              count={statstics?.clinics || 0}
               Icon={Hospital}
               iconBgColor="bg-indigo-100"
               iconColor="text-indigo-600"
             />
             <HomeCard
               title="Pending Clinics"
-              count={5}
+              count={statstics?.pendingClinics || 0}
               Icon={Hospital}
               iconBgColor="bg-purple-100"
               iconColor="text-purple-600"
             />
             <HomeCard
               title="Appointments"
-              count={5}
+              count={statstics?.appointments || 0}
               Icon={Clock10}
               iconBgColor="bg-green-100"
               iconColor="text-green-600"
             />
           </div>
+
+          {/* pending doctors */}
           <Card>
             <CardBody>
               <div className="flex flex-col gap-5 flex-1">
@@ -174,6 +184,8 @@ const Home = () => {
               </div>
             </CardBody>
           </Card>
+
+          {/* pending clinics */}
           <Card>
             <CardBody>
               <div className="flex flex-col gap-5 flex-1">

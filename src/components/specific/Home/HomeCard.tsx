@@ -1,6 +1,7 @@
 import { Card, CardBody } from "@heroui/react";
 import { LucideIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+import CountUp from "react-countup";
 
 interface HomeCardProps {
   title: string;
@@ -26,7 +27,9 @@ const HomeCard: React.FC<HomeCardProps> = ({
             {<Icon className={twMerge(iconColor, "w-6 h-6")} />}
           </div>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mt-1">{count}</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mt-1">
+          <CountUp end={count} />
+        </h2>
       </CardBody>
     </Card>
   );
