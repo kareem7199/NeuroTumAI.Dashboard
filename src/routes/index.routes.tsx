@@ -4,6 +4,8 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import Login from "@/views/Login";
 import PendingDoctorsView from "@/views/PendingDoctorsView";
 import PendingClinicsView from "@/views/PendingClinicsView";
+import MessagesView from "@/views/MessagesView";
+import MessageView from "@/views/MessageView";
 
 export default function Routes() {
   const element = useRoutes([
@@ -28,6 +30,14 @@ export default function Routes() {
         {
           path: "/clinics/pending",
           element: <PendingClinicsView />,
+        },
+        {
+          path: "/messages",
+          element: <MessagesView />,
+        },
+        {
+          path: "/messages/:id",
+          element: <MessageView />,
         },
       ],
     },

@@ -2,7 +2,8 @@ import * as React from "react"
 import {
   BriefcaseMedical,
   Home,
-  Hospital
+  Hospital,
+  Mail
 } from "lucide-react"
 
 import { NavMain } from "@/components/layout/nav-main"
@@ -45,7 +46,11 @@ const data = {
         }
       ],
     },
-
+    {
+      title: "Messages",
+      url: "/messages",
+      icon: Mail,
+    },
   ],
 }
 
