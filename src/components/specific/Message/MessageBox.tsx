@@ -51,12 +51,19 @@ const MessageBox: React.FC<MessageBoxProps> = ({ message }) => {
       </div>
       <Textarea
         onChange={(e) => setText(e.target.value)}
+        classNames={{
+          input: "resize-y min-h-[80px]",
+        }}
         placeholder="Type your response here..."
+        disableAnimation
+        disableAutosize
         endContent={
-          <SendHorizontal
-            className="text-primary cursor-pointer"
-            onClick={handleReply}
-          />
+          <div className="h-full flex items-center">
+            <SendHorizontal
+              className="text-primary cursor-pointer"
+              onClick={handleReply}
+            />
+          </div>
         }
       />
     </div>
