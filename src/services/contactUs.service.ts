@@ -19,7 +19,11 @@ const getMessages = async (
 const getMessage = async (id: number): ApiAxiosResponse<ContactUsMessage> =>
   axiosInstance.get(`/Admin/contactUsMessages/${id}`);
 
+const reply = async (id: number , message : string) =>
+  axiosInstance.post(`/Admin/contactUsMessages/${id}/reply` , { message });
+
 export default {
   getMessages,
   getMessage,
+  reply
 };
